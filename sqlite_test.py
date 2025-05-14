@@ -109,6 +109,151 @@ print("Количество людей каждого возраста:")
 for age, count in age_counts:
     print(f"Возраст: {age}, Количество: {count}")
 
-
 # Закрываем соединение
+conn.close()
+
+print("\n Повторение БД")
+conn1 = sqlite3.connect("test.db")
+cursor1 = conn1.cursor()
+
+cursor1.execute("SELECT * FROM users")
+users = cursor1.fetchall()
+print("Пользователи из test.db:")
+for user in users:
+    print(user)
+
+conn.close()
+
+conn2 = sqlite3.connect("books.db")
+cursor2 = conn2.cursor()
+
+cursor2.execute('''
+CREATE TABLE IF NOT EXISTS books (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    title TEXT NOT NULL,
+    author TEXT NOT NULL
+)
+''')
+cursor2.execute("INSERT INTO books (title, author) VALUES ('1984', 'Джордж Оруэлл')")
+cursor2.execute("INSERT INTO books (title, author) VALUES ('Мастер и Маргарита', 'Булгаков')")
+conn2.commit()
+
+cursor2.execute("SELECT * FROM books")
+books = cursor2.fetchall()
+print("\n Книги из books.db:")
+for book in books:
+    print(book)
+conn2.close()
+
+print("\n products")
+# подключение к БД
+conn3 = sqlite3.connect("products.db")
+cursor3 = conn3.cursor()
+# создаем таблицу
+cursor3.execute('''
+CREATE TABLE IF NOT EXISTS products(
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT NOT NULL,
+    price INTEGER 
+)
+''')
+# добавим товары
+cursor3.execute("INSERT INTO products (name, price) VALUES ('Хлеб', 50)")
+cursor3.execute("INSERT INTO products (name, price) VALUES ('Молоко', 80)")
+cursor3.execute("INSERT INTO products (name, price) VALUES ('Яйца', 90)")
+conn3.commit()
+# получаем и выводим товары
+cursor3.execute("SELECT * FROM products")
+products = cursor3.fetchall()
+# обновляем цкну одного товара
+cursor3.execute("UPDATE products SET price = 100 WHERE name='Яйца'")
+conn3.commit()
+# удаляем один товар
+cursor3.execute("DELETE FROM products WHERE name='Молоко'")
+conn3.commit()
+# выводим новую версию списка
+cursor3.execute("SELECT * FROM products")
+products = cursor3.fetchall()
+# выводим результат
+print("\n Продукты после изменений:")
+for product in products:
+    print(product)
+# закрываем соединение
+conn.close()
+
+print("\n clients")
+conn4 = sqlite3.connect("clients.db")
+cursor4 = conn4.cursor()
+
+cursor4.execute('''
+CREATE TABLE IF NOT EXISTS clients(
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    full_name TEXT NOT NULL,
+    city TEXT NOT NULL,
+    balance INTEGER
+)              
+''')
+cursor4.execute("INSERT INTO clients(full_name, city, balance) VALUES('Ольга Соколова', 'Москва', 1200)")
+cursor4.execute("INSERT INTO clients(full_name, city, balance) VALUES('Иван Петров', 'Екатеринбург', 800)")
+cursor4.execute("INSERT INTO clients(full_name, city, balance) VALUES('Мария Кузнецова', 'Москва', 600)")
+conn4.commit()
+
+cursor4.execute("UPDATE clients SET balance = 950 WHERE full_name = 'Иван Петров'")
+conn4.commit()
+
+cursor4.execute("DELETE FROM clients WHERE full_name='Мария Кузнецова'")
+conn4.commit()
+
+cursor4.execute("SELECT * FROM clients")
+clients = cursor4.fetchall()
+print("\n Список клиентов после изменений:")
+for client in clients:
+    print(client)
+
+print("\n Клиенты из Москвы:")
+cursor4.execute("SELECT * FROM clients WHERE city = 'Москва'")
+clients = cursor4.fetchall()
+for client in clients:
+    print(client)
+
+print("\n Клиенты с балансом больше 1000:")
+cursor4.execute("SELECT * FROM clients WHERE balance >= 1000")
+clients = cursor4.fetchall()
+for client in clients:
+    print(client)
+
+print("\n Сортировка по имени в алфавитном порядке")
+cursor4.execute("SELECT * FROM clients ORDER BY full_name ASC")
+clients = cursor4.fetchall()
+print(clients)
+
+print("\n Сортировка клиентов по убыванию баланса:")
+cursor4.execute("SELECT * FROM clients ORDER BY balance DESC")
+print(cursor4.fetchall())
+
+print("\n Имена и баланс клиентов")
+cursor4.execute("SELECT full_name, balance FROM clients")
+print(cursor4.fetchall())
+
+conn4.close()
+
+conn5 = sqlite3.connect("clients.db")
+cursor5 = conn5.cursor()
+print("\n Клиенты, живущие в Екатеринбурге:")
+cursor5.execute("SELECT * FROM clients WHERE city='Екатеринбург'")
+clients = cursor5.fetchall()
+for client in clients:
+    print(client)
+
+print("\n Имена и балан клиентов, баланс, которых меньше 1000:")
+cursor5.execute("SELECT full_name, balance FROM clients WHERE balance < 1000")
+print(cursor5.fetchall())
+
+print("\n Отсортированные города клиентов  в алфавитном порядке:")
+cursor5.execute("SELECT * FROM clients ORDER BY city ASC")
+print(cursor5.fetchall())
+
+print("\n Имена клиентов из Москвы, отсортированы по убыванию баланса:")
+cursor5.execute("SELECT full_name FROM clients WHERE city='Москва' ORDER BY balance DESC")
+print(cursor5.fetchall())
 conn.close()
