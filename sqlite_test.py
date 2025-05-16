@@ -256,4 +256,32 @@ print(cursor5.fetchall())
 print("\n Имена клиентов из Москвы, отсортированы по убыванию баланса:")
 cursor5.execute("SELECT full_name FROM clients WHERE city='Москва' ORDER BY balance DESC")
 print(cursor5.fetchall())
-conn.close()
+conn5.close()
+
+print("\n QA_engineers")
+conn6 = sqlite3.connect("qa_engineers")
+cursor6 = conn6.cursor()
+
+cursor6.execute('''
+CREATE TABLE IF NOT EXISTS qa_engineers(
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT NOT NULL,
+    email TEXT NOT NULL,
+    age INTEGER,
+    city TEXT NOT NULL
+)             
+''')
+cursor6.execute("INSERT INTO qa_engineers(name, email, age, city) VALUES('Ксения', 'kseniatest@mail.ru', 25, 'Москва')")
+cursor6.execute("INSERT INTO qa_engineers(name, email, age, city) VALUES('Анна', 'annatest@mail.ru', 30, 'Пермь')")
+cursor6.execute("INSERT INTO qa_engineers(name, email, age, city) VALUES('Олег', 'olegtest@mail.ru', 28, 'Казань')")
+cursor6.execute("INSERT INTO qa_engineers(name, email, age, city) VALUES('Иван', 'ivantest@mail.ru', 23, 'Москва')")
+conn6.commit()
+
+print("\n Пользователи старше 25 лет")
+cursor6.execute("SELECT * FROM qa_engineers WHERE age > 25")
+print(cursor6.fetchall())
+
+print("\n Имена и email только из Москвы")
+cursor6.execute("SELECT name, email FROM qa_engineers WHERE city='Москва'")
+print(cursor6.fetchall())
+conn6.close()
