@@ -258,10 +258,11 @@ cursor5.execute("SELECT full_name FROM clients WHERE city='Москва' ORDER B
 print(cursor5.fetchall())
 conn5.close()
 
-print("\n QA_engineers")
-conn6 = sqlite3.connect("qa_engineers")
-cursor6 = conn6.cursor()
 
+print("\n QA_engineers")
+conn6 = sqlite3.connect("company.db")
+cursor6 = conn6.cursor()
+# Таблица QA - engineers
 cursor6.execute('''
 CREATE TABLE IF NOT EXISTS qa_engineers(
     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -277,11 +278,36 @@ cursor6.execute("INSERT INTO qa_engineers(name, email, age, city) VALUES('Оле
 cursor6.execute("INSERT INTO qa_engineers(name, email, age, city) VALUES('Иван', 'ivantest@mail.ru', 23, 'Москва')")
 conn6.commit()
 
+# Таблица orders
+cursor6.execute('''
+CREATE TABLE IF NOT EXISTS orders(
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id INTEGER,
+    amount INTEGER,
+    status TEXT NOT NULL
+)
+''')
+cursor6.execute("INSERT INTO orders(user_id, amount, status) VALUES(1, 1500, 'completed')")
+cursor6.execute("INSERT INTO orders(user_id, amount, status) VALUES(2, 3000, 'canceled')")
+cursor6.execute("INSERT INTO orders(user_id, amount, status) VALUES(3, 500, 'completed')")
+cursor6.execute("INSERT INTO orders(user_id, amount, status) VALUES(1, 2000, 'completed')")
+conn6.commit()
+
+
 print("\n Пользователи старше 25 лет")
 cursor6.execute("SELECT * FROM qa_engineers WHERE age > 25")
 print(cursor6.fetchall())
 
 print("\n Имена и email только из Москвы")
 cursor6.execute("SELECT name, email FROM qa_engineers WHERE city='Москва'")
+print(cursor6.fetchall())
+
+print("\n Пользователи с заказами со статусом 'completed'")
+cursor6.execute('''
+SELECT qa_engineers.name, qa_engineers.city 
+FROM qa_engineers 
+JOIN orders ON qa_engineers.id = orders.user_id 
+WHERE orders.status = 'completed'
+''')
 print(cursor6.fetchall())
 conn6.close()
