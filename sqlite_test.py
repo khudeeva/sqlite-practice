@@ -311,3 +311,56 @@ WHERE orders.status = 'completed'
 ''')
 print(cursor6.fetchall())
 conn6.close()
+
+print("\n Seller_sales")
+conn7 = sqlite3.connect("seller_sale.db")
+cursor7 = conn7.cursor()
+# Seller
+cursor7.execute('''
+CREATE TABLE IF NOT  EXISTS seller(
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT NOT NULL,
+    city TEXT NOT NULL
+)
+''')
+
+cursor7.execute("INSERT INTO seller(name, city) VALUES('Ksenia', 'Moscow')")
+cursor7.execute("INSERT INTO seller(name, city) VALUES('Anna', 'Perm')")
+cursor7.execute("INSERT INTO seller(name, city) VALUES('Ivan', 'Kazan')")
+conn7.commit()
+# Sales
+cursor7.execute('''
+CREATE TABLE IF NOT EXISTS sale(
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id INTEGER,
+    product TEXT NOT NULL,
+    amount INTEGER,
+    status TEXT NOT NULL           
+)
+''')
+cursor7.execute("INSERT INTO sale(user_id, product, amount, status) VALUES(1, 'Laptop', 1200, 'completed')")
+cursor7.execute("INSERT INTO sale(user_id, product, amount, status) VALUES(1, 'Headphones', 200, 'completed')")
+cursor7.execute("INSERT INTO sale(user_id, product, amount, status) VALUES(2, 'Smartphone', 800, 'canceled')")
+cursor7.execute("INSERT INTO sale(user_id, product, amount, status) VALUES(3, 'Keyboard', 100, 'completed')")
+conn7.commit()
+
+print("\n Имя пользователя, название товара и сумма только 'completed'")
+cursor7.execute('''
+SELECT seller.name, sale.product, sale.amount
+FROM seller
+JOIN sale ON seller.id = sale.user_id
+WHERE sale.status = 'completed'
+''')
+print(cursor7.fetchall())
+
+print("\n Имя пользователя, город, общая сумма заказов, только'completed'")
+cursor7.execute('''
+SELECT seller.name, seller.city, SUM(sale.amount) AS total_sales
+FROM seller
+JOIN sale ON seller.id = sale.user_id
+WHERE sale.status = 'completed'
+GROUP BY seller.id, seller.name, seller.city
+''')
+print(cursor7.fetchall())
+conn7.close()
+
