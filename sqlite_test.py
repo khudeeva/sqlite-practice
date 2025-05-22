@@ -364,3 +364,38 @@ GROUP BY seller.id, seller.name, seller.city
 print(cursor7.fetchall())
 conn7.close()
 
+conn8 = sqlite3.connect("students")
+cursor8 = conn8.cursor()
+
+cursor8.execute('''
+CREATE TABLE IF NOT EXISTS students(
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT NOT NULL,
+    email TEXT NOT NULL,
+    age INTEGER
+)
+''')
+cursor8.execute("INSERT INTO students(name, email, age) VALUES('Anna','anna@mail.com', 25)")
+cursor8.execute("INSERT INTO students(name, email, age) VALUES('Ivan','ivan@mail.com', 30)")
+cursor8.execute("INSERT INTO students(name, email, age) VALUES('Elena','elena@mail.com', 22)")
+cursor8.execute("INSERT INTO students(name, email, age) VALUES('Ksenia','ksenia@mail.com', 30)")
+conn8.commit()
+
+print("\n Только имена и возраст:")
+cursor8.execute("SELECT name, age FROM students")
+print(cursor8.fetchall())
+print("\n Студенты, возраст которых 30 лет")
+cursor8.execute("SELECT * FROM students WHERE age = 30")
+print(cursor8.fetchall())
+print("\n Имя и email студентов младше 30лет:")
+cursor8.execute("SELECT name, email FROM students WHERE age < 30")
+print(cursor8.fetchall())
+print("\n Количество студентов в таблице:")
+cursor8.execute("SELECT COUNT(*) FROM students")
+print(cursor8.fetchall())
+
+conn8.close()
+
+
+
+
