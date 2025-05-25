@@ -396,6 +396,28 @@ print(cursor8.fetchall())
 
 conn8.close()
 
+print("\n personal_info")
+conn9 = sqlite3.connect("personal_info")
+cursor9 = conn9.cursor()
+
+cursor9.execute('''
+CREATE TABLE IF NOT EXISTS personal_info(
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT NOT NULL,
+    age INTEGER,
+    city TEXT NOT NULL
+)
+''')
+cursor9.execute("INSERT INTO personal_info(name, age, city) VALUES('Anna', 25, 'Moscow')")
+cursor9.execute("INSERT INTO personal_info(name, age, city) VALUES('Ivan', 30, 'Moscow')")
+cursor9.execute("INSERT INTO personal_info(name, age, city) VALUES('Olga', 22, 'Perm')")
+cursor9.execute("INSERT INTO personal_info(name, age, city) VALUES('Sergey', 35, 'Perm')")
+cursor9.execute("INSERT INTO personal_info(name, age, city) VALUES('Marina', 28, 'Kazan')")
+conn9.commit()
+print("\n Имена пользоватлеей, только из Перми и возраст меньше 30 лет:")
+cursor9.execute("SELECT name FROM personal_info WHERE city='Perm' AND age < 30")
+print(cursor9.fetchall())
+conn9.close()
 
 
 
