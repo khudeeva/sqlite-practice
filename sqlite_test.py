@@ -419,5 +419,44 @@ cursor9.execute("SELECT name FROM personal_info WHERE city='Perm' AND age < 30")
 print(cursor9.fetchall())
 conn9.close()
 
+print("\n customer + buy")
+conn10 = sqlite3.connect("customer.db")
+cursor10 = conn10.cursor()
+# Customer
+cursor10.execute('''
+CREATE TABLE IF NOT EXISTS customer(
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT NOT NULL
+)
+''')
+cursor10.execute("INSERT INTO customer(name) VALUES('Anna')")
+cursor10.execute("INSERT INTO customer(name) VALUES('Bob')")
+cursor10.execute("INSERT INTO customer(name) VALUES('Max')")
+cursor10.execute("INSERT INTO customer(name) VALUES('Liza')")
+conn10.commit()
+# buy
+cursor10.execute('''
+CREATE TABLE IF NOT EXISTS buy(
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id INTEGER,
+    product TEXT NOT NULL              
+)
+''')
+cursor10.execute("INSERT INTO buy(user_id, product) VALUES(1, 'book')")
+cursor10.execute("INSERT INTO buy(user_id, product) VALUES(2, 'laptop')")
+cursor10.execute("INSERT INTO buy(user_id, product) VALUES(2, 'computer mouse')")
+cursor10.execute("INSERT INTO buy(user_id, product) VALUES(5, 'keyboard')")
+conn10.commit()
+
+# LEFT JOIN
+cursor10.execute('''
+SELECT DISTINCT customer.name, buy.product
+FROM customer
+LEFT JOIN buy ON buy.user_id = customer.id
+''')
+print(cursor10.fetchall())
+conn10.close()
+
+
 
 
